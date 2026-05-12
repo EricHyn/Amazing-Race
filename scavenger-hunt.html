@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science Scavenger Hunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2436;
+    --accent: #00e5a0;
+    --accent2: #3b82f6;
+    --danger: #ff4d6d;
+    --text: #e8f0fe;
+    --muted: #6b7a99;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -40%;
+    left: -20%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(0,229,160,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -30%;
+    right: -20%;
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(ellipse, rgba(59,130,246,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .station-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    border: 1px solid rgba(0,229,160,0.3);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .question-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .question-text {
+    font-size: 17px;
+    line-height: 1.65;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .given {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1.2rem;
+  }
+
+  .given-pill {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid rgba(59,130,246,0.25);
+    color: #93c5fd;
+    padding: 4px 12px;
+    border-radius: 8px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+    align-items: stretch;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0 1rem;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    height: 48px;
+  }
+
+  input[type="text"]:focus {
+    border-color: rgba(0,229,160,0.5);
+  }
+
+  input[type="text"].shake {
+    animation: shake 0.4s ease;
+    border-color: var(--danger);
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+  }
+
+  button {
+    background: var(--accent);
+    color: #0a0f1e;
+    border: none;
+    border-radius: 10px;
+    padding: 0 1.4rem;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    height: 48px;
+    transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  button:hover { opacity: 0.88; }
+  button:active { transform: scale(0.97); }
+
+  .feedback {
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 13px;
+    min-height: 20px;
+  }
+
+  .feedback.error { color: var(--danger); }
+  .feedback.ok { color: var(--accent); }
+
+  .hint-card {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08), rgba(59,130,246,0.08));
+    border: 1px solid rgba(0,229,160,0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 1rem;
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .hint-card.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hint-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hint-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hint-text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .station-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 2rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: background 0.3s;
+  }
+
+  .dot.active { background: var(--accent); border-color: var(--accent); }
+
+  .error-page {
+    text-align: center;
+    padding: 4rem 1rem;
+  }
+
+  .error-page h2 {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    color: var(--danger);
+    margin-bottom: 1rem;
+  }
+
+  .error-page p { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="station-dots" id="dots"></div>
+
+<header>
+  <div class="station-badge" id="station-badge">Loading...</div>
+  <h1>Science <span>Scavenger Hunt</span></h1>
+  <p class="subtitle">Answer correctly to reveal your next location hint.</p>
+</header>
+
+<div id="main-content"></div>
+
+</div>
+
+<script>
+const stations = [
+  {
+    question: "How many moles are in 25.0 g of NaCl? Round to 3 significant figures.",
+    given: ["Molar mass NaCl = 58.5 g/mol"],
+    answers: ["0.427 mol nacl", "0.427 mol", "0.427"],
+    hint: "Head to where students grab their lunches — look near the back wall."
+  },
+  {
+    question: "How many grams are in 0.375 mol of CO₂? Round to 3 significant figures.",
+    given: ["Molar mass CO₂ = 44.0 g/mol"],
+    answers: ["16.5 g co2", "16.5 g", "16.5"],
+    hint: "Your next clue is tucked into the place where books live. Check the science section."
+  },
+  {
+    question: "How many molecules are in 0.0200 mol of H₂O? Round to 3 significant figures.",
+    given: ["Avogadro's number = 6.022 × 10²³"],
+    answers: ["1.20 x 10^22 molecules", "1.20 x 10^22", "1.20×10^22", "1.20e22"],
+    hint: "Find the room where students present projects — it's near the main hallway bulletin board."
+  },
+  {
+    question: "How many moles are in 3.01 × 10²³ molecules of NH₃? Round to 3 significant figures.",
+    given: ["Avogadro's number = 6.022 × 10²³"],
+    answers: ["0.500 mol nh3", "0.500 mol", "0.500", "0.5 mol", "0.5"],
+    hint: "Look for the trophy case near the main office — your QR code is on the back panel."
+  },
+  {
+    question: "How many oxygen atoms are in 2.50 mol of Al₂(SO₄)₃? Round to 3 significant figures.",
+    given: ["Al₂(SO₄)₃ has 12 oxygen atoms per formula unit"],
+    answers: ["3.01 x 10^25 oxygen atoms", "3.01 x 10^25", "3.01×10^25", "3.01e25"],
+    hint: "Head outside to the courtyard — check the base of the flagpole."
+  },
+  {
+    question: "How many grams are in 4.50 × 10²² molecules of O₂? Round to 3 significant figures.",
+    given: ["Molar mass O₂ = 32.00 g/mol", "Avogadro's number = 6.022 × 10²³"],
+    answers: ["2.39 g o2", "2.39 g", "2.39"],
+    hint: "The gym foyer — look above the water fountain on the left side."
+  },
+  {
+    question: "How many molecules are in 15.0 g of CH₄? Round to 3 significant figures.",
+    given: ["Molar mass CH₄ = 16.04 g/mol", "Avogadro's number = 6.022 × 10²³"],
+    answers: ["5.63 x 10^23 molecules", "5.63 x 10^23", "5.63×10^23", "5.63e23"],
+    hint: "Check the science wing — it's taped under the periodic table poster outside Room 214."
+  },
+  {
+    question: "How many grams are in 1.25 × 10²⁴ formula units of CaCl₂? Round to 3 significant figures.",
+    given: ["Molar mass CaCl₂ = 110.98 g/mol", "Avogadro's number = 6.022 × 10²³"],
+    answers: ["230 g cacl2", "230 g", "230"],
+    hint: "Go to the main stairwell — look underneath the third step from the bottom."
+  },
+  {
+    question: "How many moles of carbon atoms are in 0.750 mol of C₆H₁₂O₆? Round to 3 significant figures.",
+    given: ["C₆H₁₂O₆ has 6 carbon atoms per molecule"],
+    answers: ["4.50 mol c", "4.50 mol", "4.50", "4.5"],
+    hint: "The art hallway display cases — your QR code is on the frame of the second display."
+  },
+  {
+    question: "How many hydrogen atoms are in 18.0 g of H₂O? Round to 3 significant figures.",
+    given: ["Molar mass H₂O = 18.02 g/mol", "Avogadro's number = 6.022 × 10²³", "H₂O has 2 hydrogen atoms per molecule"],
+    answers: ["1.20 x 10^24 hydrogen atoms", "1.20 x 10^24", "1.20×10^24", "1.20e24"],
+    hint: "🎉 You finished! Return to the classroom and show your teacher this screen."
+  }
+];
+
+function getStation() {
+  const params = new URLSearchParams(window.location.search);
+  const s = parseInt(params.get('station'));
+  if (!s || s < 1 || s > stations.length) return null;
+  return s;
+}
+
+function normalize(str) {
+  return str.toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/×/g, 'x')
+    .replace(/[•·]/g, '')
+    .trim();
+}
+
+function buildDots(current) {
+  const container = document.getElementById('dots');
+  for (let i = 1; i <= stations.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === current ? ' active' : '');
+    container.appendChild(d);
+  }
+}
+
+function render() {
+  const stationNum = getStation();
+  const content = document.getElementById('main-content');
+
+  if (!stationNum) {
+    document.getElementById('station-badge').textContent = 'Error';
+    content.innerHTML = `<div class="error-page">
+      <h2>Invalid station</h2>
+      <p>Make sure you scanned the correct QR code.<br>The URL should end in <code>?station=1</code> through <code>?station=10</code>.</p>
+    </div>`;
+    return;
+  }
+
+  const data = stations[stationNum - 1];
+  buildDots(stationNum);
+  document.getElementById('station-badge').textContent = `Station ${stationNum} of ${stations.length}`;
+
+  const givenPills = data.given.map(g => `<span class="given-pill">${g}</span>`).join('');
+  const isLast = stationNum === stations.length;
+
+  content.innerHTML = `
+    <div class="card">
+      <div class="question-label">Question ${stationNum}</div>
+      <p class="question-text">${data.question}</p>
+      <div class="given">${givenPills}</div>
+      <div class="input-row">
+        <input type="text" id="answer-input" placeholder="Type your answer…" autocomplete="off" />
+        <button onclick="checkAnswer()">Submit</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div class="hint-card" id="hint-card">
+      <div class="hint-label">${isLast ? 'You did it!' : 'Next location'}</div>
+      <div class="hint-text">${data.hint}</div>
+    </div>
+  `;
+
+  document.getElementById('answer-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkAnswer();
+  });
+}
+
+function checkAnswer() {
+  const stationNum = getStation();
+  const data = stations[stationNum - 1];
+  const input = document.getElementById('answer-input');
+  const feedback = document.getElementById('feedback');
+  const hintCard = document.getElementById('hint-card');
+  const userAnswer = normalize(input.value);
+
+  if (!userAnswer) return;
+
+  const correct = data.answers.some(a => normalize(a) === userAnswer);
+
+  if (correct) {
+    feedback.textContent = '✓ Correct!';
+    feedback.className = 'feedback ok';
+    hintCard.classList.add('visible');
+    input.disabled = true;
+  } else {
+    feedback.textContent = '✗ Not quite — check your calculation and try again.';
+    feedback.className = 'feedback error';
+    input.classList.remove('shake');
+    void input.offsetWidth;
+    input.classList.add('shake');
+    setTimeout(() => input.classList.remove('shake'), 400);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
