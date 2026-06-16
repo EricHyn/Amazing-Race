@@ -59,7 +59,15 @@
   h1 span { color: var(--accent); }
   .subtitle { font-size: 14px; color: var(--muted); margin-top: 0.5rem; font-weight: 300; }
   .card { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; }
-  .station-image { width: 100%; border-radius: 12px; margin-bottom: 1.5rem; object-fit: cover; max-height: 220px; display: block; border: 1px solid rgba(255,255,255,0.08); }
+  .station-image {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    object-fit: contain;
+    display: block;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--surface2);
+  }
   .question-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 1rem; }
   .question-text { font-size: 17px; line-height: 1.65; font-weight: 400; color: var(--text); }
   .given { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.2rem; }
@@ -121,14 +129,15 @@
 </div>
 
 <script>
-const PLACEHOLDER_IMG = "https://imgur.com/gallery/rh0vAnu"
+const PLACEHOLDER_IMG = null
+
 const stations = [
   {
     question: "A 45kg person slides down a waterslide, and passes point A at 8.3m/s. As the person reaches the bottom of the waterslide, 3600J of energy is lost due to heat. What is the person's speed at point B? (2 Sig Figs)",
     given: ["m = 45kg", "v = 8.3m/s", "h = 21m", "Et = 3600J"],
-    answers: ["18m/s", "18", "18M/S", "18 m/s", "18 M/S"],
+    answers: ["18m/s", "18", "18m/s", "18 m/s"],
     hint: "On a night meant for laughter and entertainment, America's 16th president spent his final evening in a place filled with actors, bright lights, and a stage. Find the type of place where Lincoln's last public appearance occurred.",
-    image: https://imgur.com/gallery/rh0vAnu
+    image: "https://i.imgur.com/rh0vAnu.jpg"
   },
   {
     question: "A 10 kg object has a weight of 98 N on Earth. What is the gravitational field strength used?",
@@ -141,28 +150,28 @@ const stations = [
     question: "A book rests on a table. The table pushes up on the book with 12 N. What force does the book exert on the table, and in which direction?",
     given: ["Normal force from table = 12 N upward", "Newton\u2019s Third Law applies"],
     answers: ["12 n downward", "12 n down", "12 newtons downward", "12 newtons down"],
-    hint: "Go to the portable classroom where Mandarin is taught — the QR code is on the door.",
+    hint: "Go to the portable classroom where Mandarin is taught \u2014 the QR code is on the door.",
     image: null
   },
   {
     question: "A 3.0 kg block is on a surface with a coefficient of kinetic friction of 0.25. What is the friction force acting on it? (g = 9.8 m/s\u00b2)",
     given: ["m = 3.0 kg", "\u03bc_k = 0.25", "g = 9.8 m/s\u00b2"],
     answers: ["7.35 n", "7.4 n", "7.35"],
-    hint: "Find locker #1182 — the QR code is taped to the inside of the door.",
+    hint: "Find locker #1182 \u2014 the QR code is taped to the inside of the door.",
     image: null
   },
   {
     question: "An object moves at constant velocity. What can you conclude about the net force acting on it?",
     given: ["Constant velocity", "Newton\u2019s First Law"],
     answers: ["net force is zero", "zero net force", "the net force is zero", "0 n", "zero"],
-    hint: "Head to the theatre — look underneath the front-row seat on the far left.",
+    hint: "Head to the theatre \u2014 look underneath the front-row seat on the far left.",
     image: null
   },
   {
     question: "A 60 kg student stands on a scale in an elevator accelerating upward at 2.0 m/s\u00b2. What does the scale read? (g = 9.8 m/s\u00b2)",
     given: ["m = 60 kg", "a = 2.0 m/s\u00b2 upward", "g = 9.8 m/s\u00b2"],
     answers: ["708 n", "708"],
-    hint: "Look in the school garden — the QR code is attached to the fence post near the entrance.",
+    hint: "Look in the school garden \u2014 the QR code is attached to the fence post near the entrance.",
     image: null
   },
   {
@@ -185,7 +194,6 @@ function normalize(str) {
   return str.toLowerCase()
     .replace(/\s+/g, " ")
     .replace(/m\/s\^2/g, "m/s2")
-    .replace(/m\/s2/g, "m/s2")
     .replace(/\u00d7/g, "x")
     .trim();
 }
