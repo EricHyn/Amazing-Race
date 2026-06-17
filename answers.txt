@@ -3,6 +3,7 @@
 26W
 3-Methyl Pentane
 2.7*10^7m
+endothermic
 
 \\
 here 
