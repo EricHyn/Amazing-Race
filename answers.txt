@@ -5,11 +5,11 @@
 
 \\
 here 
-theatre
-softball field 
-garden
-isaacs locker
-above library
+theatre (lincoln)
+softball field (diamond)
+garden (hexacode)
+isaacs locker (locker num)
+above library (Go higher than knowledge)
 artwing
 ravens den
 portable 12
