@@ -2,6 +2,7 @@
 0.41M
 26W
 3-Methyl Pentane
+2.7*10^7m
 
 \\
 here 
@@ -10,7 +11,7 @@ softball field (diamond)
 garden (hexacode)
 isaacs locker (locker num)
 above library (Go higher than knowledge)
-artwing
+artwing (colours and shapes)
 ravens den
 portable 12
 homeroom
