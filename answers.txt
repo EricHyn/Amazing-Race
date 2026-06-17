@@ -4,6 +4,7 @@
 3-Methyl Pentane
 2.7*10^7m
 endothermic
+21s
 
 \\
 here 
